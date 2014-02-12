@@ -12,4 +12,5 @@ r2 = [float(x) / 20.0 for x in range(1, 21)]
 b2 = bandit.Bandit(p2, r2)
 
 best = algorithms.incremental_uniform(b1, 100)
-best = algorithms.ucb(b1, 1000)
+best = algorithms.ucb(b1, 10000)
+best = algorithms.epsilon_greedy(b1, 10000, 0.5)
