@@ -11,6 +11,10 @@ p2 = [0.1 for x in range(20)]
 r2 = [float(x) / 20.0 for x in range(1, 21)]
 b2 = bandit.Bandit(p2, r2)
 
-best = algorithms.incremental_uniform(b1, 100)
-best = algorithms.ucb(b1, 10000)
-best = algorithms.epsilon_greedy(b1, 10000, 0.5)
+p3 = [0.1 / float(x) for x in range(1, 21)]
+r3 = [float(x) for x in range(1, 21)]
+b3 = bandit.Bandit(p3, r3)
+
+best, history = algorithms.incremental_uniform(b1, 10000)
+best, history = algorithms.ucb(b1, 10000)
+best, history = algorithms.epsilon_greedy(b1, 10000, 0.5)

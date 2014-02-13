@@ -6,6 +6,8 @@ import random
 
 
 # bandit algorithms take in a bandit and a budget of arm pulls and return the best arm
+
+# pulls each arm in order
 def incremental_uniform(bandit, budget):
     pulls = [0 for _ in range(bandit.get_num_arms())]
     reward = [0 for _ in range(bandit.get_num_arms())]
@@ -18,9 +20,10 @@ def incremental_uniform(bandit, budget):
 
     max_index, _ = max(enumerate([reward[x] / pulls[x] for x in range(bandit.get_num_arms())]), key=operator.itemgetter(1))
 
-    return max_index
+    return max_index, pulls
 
 
+# tries to minimize cumulative regret, balances exploration and exploitation
 def ucb(bandit, budget):
     pulls = [0 for _ in range(bandit.get_num_arms())]
     reward = [0 for _ in range(bandit.get_num_arms())]
@@ -41,9 +44,10 @@ def ucb(bandit, budget):
 
     max_index, _ = max(enumerate([reward[x] / pulls[x] for x in range(bandit.get_num_arms())]), key=operator.itemgetter(1))
 
-    return max_index
+    return max_index, pulls
 
 
+# epsilon chance of pulling best arm so far, otherwise pull random arm
 def epsilon_greedy(bandit, budget, epsilon):
     assert(epsilon > 0)
     assert(epsilon < 1)
@@ -72,7 +76,7 @@ def epsilon_greedy(bandit, budget, epsilon):
 
         reward[arm] += bandit.pull(arm)
         pulls[arm] += 1
-        
+
     max_index, _ = max(enumerate([reward[x] / pulls[x] for x in range(bandit.get_num_arms())]), key=operator.itemgetter(1))
 
-    return max_index
+    return max_index, pulls
