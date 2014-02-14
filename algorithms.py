@@ -11,22 +11,25 @@ import random
 def incremental_uniform(bandit, budget):
     pulls = [0 for _ in range(bandit.get_num_arms())]
     reward = [0 for _ in range(bandit.get_num_arms())]
+    history = [0 for _ in range(budget)]
 
     current_arm = 0
     for i in range(budget):
         reward[current_arm] += bandit.pull(current_arm)
         pulls[current_arm] += 1
         current_arm = (current_arm + 1) % bandit.get_num_arms()
+        history[i] = current_arm
 
     max_index, _ = max(enumerate([reward[x] / pulls[x] for x in range(bandit.get_num_arms())]), key=operator.itemgetter(1))
 
-    return max_index, pulls
+    return max_index, pulls, history
 
 
 # tries to minimize cumulative regret, balances exploration and exploitation
 def ucb(bandit, budget):
     pulls = [0 for _ in range(bandit.get_num_arms())]
     reward = [0 for _ in range(bandit.get_num_arms())]
+    history = [0 for _ in range(budget)]
 
     for i in range(budget):
         # use heuristic to balance exploration and pulling best arm, for min. cumulative regret
@@ -41,10 +44,11 @@ def ucb(bandit, budget):
         current_arm, _ = max(enumerate(heuristic), key=operator.itemgetter(1))
         reward[current_arm] += bandit.pull(current_arm)
         pulls[current_arm] += 1
+        history[i] = current_arm
 
     max_index, _ = max(enumerate([reward[x] / pulls[x] for x in range(bandit.get_num_arms())]), key=operator.itemgetter(1))
 
-    return max_index, pulls
+    return max_index, pulls, history
 
 
 # epsilon chance of pulling best arm so far, otherwise pull random arm
@@ -54,6 +58,7 @@ def epsilon_greedy(bandit, budget, epsilon):
 
     pulls = [0 for _ in range(bandit.get_num_arms())]
     reward = [0 for _ in range(bandit.get_num_arms())]
+    history = [0 for _ in range(budget)]
 
     for i in range(budget):
         avg = []
@@ -76,7 +81,8 @@ def epsilon_greedy(bandit, budget, epsilon):
 
         reward[arm] += bandit.pull(arm)
         pulls[arm] += 1
+        history[i] = arm
 
     max_index, _ = max(enumerate([reward[x] / pulls[x] for x in range(bandit.get_num_arms())]), key=operator.itemgetter(1))
 
-    return max_index, pulls
+    return max_index, pulls, history
