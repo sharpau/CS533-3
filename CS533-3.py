@@ -36,17 +36,17 @@ p2 = [0.1 for x in range(20)]
 r2 = [float(x) / 20.0 for x in range(1, 21)]
 b2 = bandit.Bandit(p2, r2)
 
-# 8 rewards are low, two are equal expected but unlikely
-p3 = [0.1 for x in range(8)] + [0.5, 0.05]
-r3 = [0.1 for x in range(8)] + [0.1, 1.0]
+# 9 rewards are low, 1 is very high and likely - epsilon-greedy should perform worse here
+p3 = [0.1 for x in range(9)] + [0.9]
+r3 = [0.1 for x in range(9)] + [0.9]
 b3 = bandit.Bandit(p3, r3)
 
 bandit_list = [b1, b2, b3]
 b_num = 1
 
 for b in bandit_list:
-    trials = 100
-    budget = 1000
+    trials = 5
+    budget = 50000
     uniform_avg_cumulative = [0 for _ in range(budget)]
     uniform_avg_simple = [0 for _ in range(budget)]
     ucb_avg_cumulative = [0 for _ in range(budget)]
